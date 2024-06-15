@@ -1,0 +1,9 @@
+.git
+.venv311
+.dockerignore
+.gitignore
+.vscode
+test
+__pycache__
+uploads
+transcriptions

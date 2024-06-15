@@ -1,0 +1,13 @@
+services:
+  fastapi:
+    image: whisper-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: whisper-backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - .:/app
+    restart: always
