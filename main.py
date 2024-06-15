@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 import aiofiles
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
@@ -25,7 +25,13 @@ async def read_root(request: Request):
 
 
 @app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), validation: str = Form(...)):
+    if not validation or not validation.strip():
+        raise HTTPException(status_code=400, detail="Validation text is required")
+
+    if validation != os.getenv("SECRET_KEY"):
+        raise HTTPException(status_code=401, detail="Validation text is incorrect")
+
     audio_path = await __get_upload_file(file)
     transcription_path = await transcribe_audio(audio_path)
     return FileResponse(
